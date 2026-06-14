@@ -24,6 +24,9 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
 )
+# httpx loguea la URL completa de cada request (incluye el token de Telegram)
+# y satura los logs con cada getUpdates. Lo subimos a WARNING para ocultarlo.
+logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
