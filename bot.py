@@ -54,6 +54,13 @@ def _start_health_server() -> None:
 
 
 def main() -> None:
+    # Render ignora runtime.txt y corre Python 3.14, que eliminó el
+    # asyncio.get_event_loop() implícito que python-telegram-bot 21.6 usa
+    # internamente. Creamos el loop a mano para evitar el crash al arrancar.
+    import asyncio
+
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
     # Falla temprano y claro si faltan credenciales.
     config.validate()
 
