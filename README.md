@@ -149,18 +149,32 @@ Lista actualizada: [console.groq.com/docs/models](https://console.groq.com/docs/
 
 ---
 
-## ☁️ Deploy en Railway
+## ☁️ Deploy en Render.com (gratis, 24/7)
+
+El bot incluye un mini servidor HTTP de *health check* (responde `200 OK` en `/`) para
+poder correr en el **free tier de Render**, que solo ofrece **Web Services** y los
+hiberna tras 15 min sin tráfico. Combinado con un monitor de UptimeRobot, queda vivo 24/7
+sin costo.
 
 1. Subí el repo a GitHub (el `.gitignore` ya excluye `.env`, así que tus keys no se suben).
-2. En [Railway](https://railway.app/): **New Project → Deploy from GitHub repo** y elegí
-   este repo.
-3. En **Variables**, cargá las mismas que tenés en `.env`
-   (`TELEGRAM_TOKEN`, `GROQ_API_KEY`, y las opcionales que quieras).
-4. Railway detecta el `Procfile` (`worker: python bot.py`) y levanta el bot.
-   Como usa *polling*, no necesitás exponer ningún puerto ni configurar webhooks.
+2. En [Render](https://render.com/): **New → Web Service** (⚠️ NO "Background Worker",
+   ese es pago) y conectá este repo.
+3. Config del servicio:
+   - **Build command**: `pip install -r requirements.txt`
+   - **Start command**: `python bot.py`
+   - **Instance type**: Free
+4. En **Environment**, cargá las mismas variables de tu `.env`
+   (`TELEGRAM_TOKEN`, `GROQ_API_KEY`, y las opcionales). Render inyecta `PORT` solo.
+5. **Mantenerlo despierto**: en [UptimeRobot](https://uptimerobot.com/) creá un monitor
+   tipo HTTP(s) apuntando a la URL pública del servicio
+   (`https://<tu-servicio>.onrender.com/`), con intervalo de 5 minutos. Eso evita que
+   Render lo hiberne.
 
-El bot queda corriendo 24/7. Para cambiar la personalidad en producción, basta con
-editar la variable `SYSTEM_PROMPT_FILE` / `SYSTEM_PROMPT` en Railway y reiniciar.
+El bot queda corriendo 24/7. Para cambiar la personalidad en producción, editás la
+variable `SYSTEM_PROMPT_FILE` / `SYSTEM_PROMPT` en Render y reiniciás el servicio.
+
+> 💡 **Railway** también funciona (el `Procfile` sigue incluido): New Project → Deploy
+> from GitHub repo → cargar las mismas variables. Requiere el plan Hobby de pago.
 
 ---
 
